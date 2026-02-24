@@ -1,0 +1,47 @@
+body{
+    background-color: darkslategray;
+}
+
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.center {
+  margin: 20px;
+}
+
+.filters select,
+input {
+  padding: 10px 14px;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.error {
+  color: red;
+}
+button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background:#2563eb ;
+  transform: translateY(-2px);
+}
