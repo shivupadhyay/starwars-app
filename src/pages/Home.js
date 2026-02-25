@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { getPeople, getHomeworld, getSpecies, getFilm } from "../api/swapi";
 
 import Loader from "../components/Loader";
@@ -10,6 +10,10 @@ import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 
 import "../components/styles/layout.css";
+
+const speciess = {};
+const homeworldd = {};
+const filmm = {};
 
 const Home = () => {
   const [characters, setCharacters] = useState([]);
@@ -28,20 +32,41 @@ const Home = () => {
   const [selected, setSelected] = useState(null);
 
   const CharacterDetail = async (char) => {
+    //  console.log("Charac", char.name)
     let speciesName = "Human";
     let homeworldData = null;
     let filmTitles = [];
 
     if (char.species.length) {
-      const res = await getSpecies(char.species[0]);
-      speciesName = res.data.name;
+      const url = char.species[0];
+
+      if (!speciess[url]) {
+        const res = await getSpecies(url);
+        // console.log(res, "Species");
+        speciess[url] = res.data;
+      }
+
+      speciesName = speciess[url].name;
     }
 
-    const hw = await getHomeworld(char.homeworld);
-    homeworldData = hw.data;
+    if (!homeworldd[char.homeworld]) {
+      const hw = await getHomeworld(char.homeworld);
+      homeworldd[char.homeworld] = hw.data;
+    }
 
-    const films = await Promise.all(char.films.map((f) => getFilm(f)));
-    filmTitles = films.map((f) => f.data.title);
+    homeworldData = homeworldd[char.homeworld];
+
+    const films = await Promise.all(
+      char.films.map(async (f) => {
+        if (!filmm[f]) {
+          const res = await getFilm(f);
+          filmm[f] = res.data;
+        }
+        return filmm[f];
+      }),
+    );
+
+    filmTitles = films.map((f) => f.title);
 
     return {
       ...char,
@@ -89,7 +114,7 @@ const Home = () => {
       );
   }, [characters, search, filters]);
 
-  console.log("Filtered Charac",filteredCharacters)
+  console.log("Filtered Charac", filteredCharacters);
 
   const speciesList = [...new Set(characters.map((c) => c.speciesName))];
   const homeworldList = [
