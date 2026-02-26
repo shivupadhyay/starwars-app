@@ -114,8 +114,6 @@ const Home = () => {
       );
   }, [characters, search, filters]);
 
-  console.log("Filtered Charac", filteredCharacters);
-
   const speciesList = [...new Set(characters.map((c) => c.speciesName))];
   const homeworldList = [
     ...new Set(characters.map((c) => c.homeworldData?.name)),
